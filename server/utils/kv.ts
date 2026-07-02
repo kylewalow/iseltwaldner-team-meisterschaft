@@ -71,10 +71,27 @@ function escapeRegExp(input: string): string {
 let store: LowLevelStore | undefined
 let warnedMemory = false
 
+// Resolve the Upstash REST credentials regardless of the env-var prefix the
+// Vercel/Upstash integration chose (KV_, STORAGE_, UPSTASH_REDIS_, …). Falls
+// back to scanning for any "<PREFIX>_REST_API_URL" + matching "..._TOKEN" pair.
+function resolveKvCredentials(): { url?: string; token?: string } {
+  const env = process.env
+  const url = env.KV_REST_API_URL || env.UPSTASH_REDIS_REST_URL
+  const token = env.KV_REST_API_TOKEN || env.UPSTASH_REDIS_REST_TOKEN
+  if (url && token) return { url, token }
+
+  const URL_SUFFIX = '_REST_API_URL'
+  for (const key of Object.keys(env)) {
+    if (!key.endsWith(URL_SUFFIX)) continue
+    const tokenKey = `${key.slice(0, -URL_SUFFIX.length)}_REST_API_TOKEN`
+    if (env[key] && env[tokenKey]) return { url: env[key], token: env[tokenKey] }
+  }
+  return {}
+}
+
 function getStore(): LowLevelStore {
   if (store) return store
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN
+  const { url, token } = resolveKvCredentials()
   if (url && token) {
     store = createUpstashStore(url, token)
   } else {
