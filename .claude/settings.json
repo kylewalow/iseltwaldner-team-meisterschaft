@@ -9,7 +9,10 @@
       "Bash(pkill -f \"nuxt-dev\\\\|nitro\")",
       "Bash(lsof -iTCP:3000 -sTCP:LISTEN -n)",
       "Bash(NITRO_PRESET=vercel pnpm build)",
-      "Bash(kill 99901)"
+      "Bash(kill 99901)",
+      "Bash(node /private/tmp/claude-501/-Users-kylewerner-projects-iseltwaldner-team-meisterschaft/a3024779-c9bf-467b-bf4c-45b5898e2e85/scratchpad/convert.mjs)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s http://localhost:3000/)"
     ]
   }
 }

@@ -19,9 +19,12 @@ export function useResults(intervalMs = 5000) {
     myChoice: null,
   })
 
+  // Forward the incoming request headers (incl. the voter cookie) to the
+  // internal API during SSR, so `myChoice` is correct on the very first paint.
+  const requestFetch = useRequestFetch()
   const { data, refresh, status: requestStatus } = useAsyncData<ResultsResponse>(
     'results',
-    () => $fetch('/api/results'),
+    () => requestFetch('/api/results'),
     { default: defaults },
   )
 
