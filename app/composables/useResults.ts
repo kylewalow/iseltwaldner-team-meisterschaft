@@ -42,7 +42,17 @@ export function useResults(intervalMs = 5000) {
   const votes = computed(() => data.value?.votes ?? {})
   const total = computed(() => data.value?.total ?? 0)
   const myChoice = computed(() => data.value?.myChoice ?? null)
-  const loading = computed(() => requestStatus.value === 'pending')
+
+  // Only the very first load counts as "loading" — background poll refreshes set
+  // requestStatus back to 'pending' each time, which must NOT flash the loading
+  // state (that caused the admin panel to flicker every 5s).
+  const hasEverLoaded = ref(false)
+  watchEffect(() => {
+    if (requestStatus.value === 'success' || requestStatus.value === 'error') {
+      hasEverLoaded.value = true
+    }
+  })
+  const loading = computed(() => !hasEverLoaded.value)
 
   return { status, votes, total, myChoice, loading, refresh }
 }
