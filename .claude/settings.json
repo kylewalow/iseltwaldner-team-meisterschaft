@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx nuxi *)",
+      "Bash(pnpm add *)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(ADMIN_USER=admin ADMIN_PW=secret pnpm dev)",
+      "Bash(pkill -f \"nuxt dev\")",
+      "Bash(pkill -f \"nuxt-dev\\\\|nitro\")",
+      "Bash(lsof -iTCP:3000 -sTCP:LISTEN -n)",
+      "Bash(NITRO_PRESET=vercel pnpm build)",
+      "Bash(kill 99901)"
+    ]
+  }
+}
